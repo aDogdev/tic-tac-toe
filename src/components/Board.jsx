@@ -3,10 +3,19 @@ import { Square } from "./Square";
 import { WinnerMessage } from "./WinnerMessage";
 import { TURNS } from "../constants";
 import { checkWinner, checkEndGame } from "../logic/board";
+import { saveGameToStorage, resetGameStorage } from "../logic/storage";
 
 function Board() {
-  const [board, setBoard] = useState(Array(9).fill(null));
-  const [turn, setTurn] = useState(TURNS.x);
+  const [board, setBoard] = useState(() => {
+    const boardFromStorage = window.localStorage.getItem("board");
+    return boardFromStorage
+      ? JSON.parse(boardFromStorage)
+      : Array(9).fill(null);
+  });
+  const [turn, setTurn] = useState(() => {
+    const turnFromStorage = window.localStorage.getItem("turn");
+    return turnFromStorage ?? TURNS.x;
+  });
   const [winner, setWinner] = useState(null);
 
   const updateBoard = (index) => {
@@ -18,6 +27,12 @@ function Board() {
 
     const newTurn = turn === TURNS.x ? TURNS.o : TURNS.x;
     setTurn(newTurn);
+
+    saveGameToStorage({
+      board: newBoard,
+      turn: newTurn,
+    });
+
     const newWinner = checkWinner(newBoard);
     if (newWinner) {
       setWinner(newWinner);
@@ -30,6 +45,8 @@ function Board() {
     setBoard(Array(9).fill(null));
     setTurn(TURNS.x);
     setWinner(null);
+
+    resetGameStorage();
   };
 
   return (
