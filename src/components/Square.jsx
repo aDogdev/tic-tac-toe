@@ -9,13 +9,13 @@ function Square({ children, isSelected, updateBoard, index }) {
 
   return (
     <div className={className} onClick={handleClick}>
-      <span>{children}</span>
+      {children}
     </div>
   );
 }
 
 Square.propTypes = {
-  children: PropTypes.string,
+  children: PropTypes.any,
   isSelected: PropTypes.bool,
   updateBoard: PropTypes.func,
   index: PropTypes.number,

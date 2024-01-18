@@ -1,29 +1,13 @@
 import { useState } from "react";
 import { Square } from "./Square";
-import { TURNS, WINNER_COMBOS } from "../constants";
+import { WinnerMessage } from "./WinnerMessage";
+import { TURNS } from "../constants";
+import { checkWinner, checkEndGame } from "../logic/board";
 
 function Board() {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [turn, setTurn] = useState(TURNS.x);
   const [winner, setWinner] = useState(null);
-
-  const checkWinner = (boardToCheck) => {
-    for (const combo of WINNER_COMBOS) {
-      const [a, b, c] = combo;
-      if (
-        boardToCheck[a] &&
-        boardToCheck[a] === boardToCheck[b] &&
-        boardToCheck[a] === boardToCheck[c]
-      ) {
-        return boardToCheck[a];
-      }
-    }
-    return null;
-  };
-
-  const checkEndGame = (newBoard) => {
-    return newBoard.every((square) => square !== null);
-  };
 
   const updateBoard = (index) => {
     if (board[index] || winner) return;
@@ -67,16 +51,7 @@ function Board() {
         <Square isSelected={turn === TURNS.o}>{TURNS.o}</Square>
       </section>
 
-      {winner !== null && (
-        <section className="winner">
-          <div className="text">
-            <h2>{winner === false ? "Empate" : "Ganó"}</h2>
-            <header className="win">
-              {winner && <Square>{winner}</Square>}
-            </header>
-          </div>
-        </section>
-      )}
+      <WinnerMessage winner={winner}></WinnerMessage>
     </main>
   );
 }
